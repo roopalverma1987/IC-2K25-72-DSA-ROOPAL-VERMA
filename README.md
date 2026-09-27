@@ -1,2 +1,2 @@
-# IC-2K25-72-DS-ROOPAL-VERMA
+# IC-2K25-72-DSA-ROOPAL-VERMA
 Dsa lab programs 
