@@ -1,0 +1,152 @@
+#include<iostream.h>
+#include<conio.h>
+
+int A[10][10], B[10][10], R[10][10];
+int ra = 0, ca = 0, rb = 0, cb = 0;
+
+void read(int m[10][10], int r, int c)
+{
+    int i, j;
+    for (i = 0; i < r; i++)
+        for (j = 0; j < c; j++)
+            cin >> m[i][j];
+}
+
+void show(int m[10][10], int r, int c)
+{
+    int i, j;
+    for (i = 0; i < r; i++)
+    {
+        for (j = 0; j < c; j++)
+            cout << m[i][j] << "\t";
+        cout << endl;
+    }
+}
+
+void inputMatrix(int m[10][10], int &r, int &c, char name)
+{
+    cout << "Enter rows and columns of " << name << " (max 10): ";
+    cin >> r >> c;
+    if (r < 1 || r > 10 || c < 1 || c > 10)
+    {
+        cout << "Invalid order\n";
+        r = c = 0;
+        return;
+    }
+    cout << "Enter elements of " << name << ":\n";
+    read(m, r, c);
+}
+
+void add()
+{
+    int i, j;
+    if (ra == 0 || rb == 0) { cout << "Enter both matrices first\n"; return; }
+    if (ra != rb || ca != cb) { cout << "Orders must be same for addition\n"; return; }
+    for (i = 0; i < ra; i++)
+        for (j = 0; j < ca; j++)
+            R[i][j] = A[i][j] + B[i][j];
+    cout << "A + B =\n";
+    show(R, ra, ca);
+}
+
+void multiply()
+{
+    int i, j, k;
+    if (ra == 0 || rb == 0) { cout << "Enter both matrices first\n"; return; }
+    if (ca != rb) { cout << "Columns of A must equal rows of B\n"; return; }
+    for (i = 0; i < ra; i++)
+        for (j = 0; j < cb; j++)
+        {
+            R[i][j] = 0;
+            for (k = 0; k < ca; k++)
+                R[i][j] += A[i][k] * B[k][j];
+        }
+    cout << "A x B =\n";
+    show(R, ra, cb);
+}
+
+void transpose(int m[10][10], int r, int c)
+{
+    int i, j;
+    if (r == 0) { cout << "Matrix not entered\n"; return; }
+    for (i = 0; i < c; i++)
+        for (j = 0; j < r; j++)
+            R[i][j] = m[j][i];
+    cout << "Transpose =\n";
+    show(R, c, r);
+}
+
+long det(int m[10][10], int n)
+{
+    if (n == 1)
+        return m[0][0];
+    if (n == 2)
+        return (long)m[0][0] * m[1][1] - (long)m[0][1] * m[1][0];
+    // 3 x 3: expansion along the first row
+    return (long)m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
+         - (long)m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
+         + (long)m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+}
+
+void determinant(int m[10][10], int r, int c)
+{
+    if (r == 0) { cout << "Matrix not entered\n"; return; }
+    if (r != c) { cout << "Determinant needs a square matrix\n"; return; }
+    if (r > 3) { cout << "This program supports up to 3 x 3 only\n"; return; }
+    cout << "Determinant = " << det(m, r) << endl;
+}
+
+char pick()
+{
+    char w;
+    cout << "Use matrix A or B? ";
+    cin >> w;
+    return w;
+}
+
+void main()
+{
+    int ch;
+    char w;
+    do
+    {
+        clrscr();
+        cout << "===== MATRIX CALCULATOR =====\n";
+        cout << "1. Enter matrix A\n2. Enter matrix B\n3. Display matrices\n";
+        cout << "4. Add (A + B)\n5. Multiply (A x B)\n6. Transpose\n";
+        cout << "7. Determinant (up to 3x3)\n0. Exit\n";
+        cout << "Enter choice: ";
+        cin >> ch;
+        switch (ch)
+        {
+            case 1: inputMatrix(A, ra, ca, 'A'); break;
+            case 2: inputMatrix(B, rb, cb, 'B'); break;
+            case 3:
+                if (ra) { cout << "A =\n"; show(A, ra, ca); }
+                if (rb) { cout << "B =\n"; show(B, rb, cb); }
+                if (!ra && !rb) cout << "No matrices entered\n";
+                break;
+            case 4: add(); break;
+            case 5: multiply(); break;
+            case 6:
+                w = pick();
+                if (w == 'A' || w == 'a') transpose(A, ra, ca);
+                else if (w == 'B' || w == 'b') transpose(B, rb, cb);
+                else cout << "Invalid matrix\n";
+                break;
+            case 7:
+                w = pick();
+                if (w == 'A' || w == 'a') determinant(A, ra, ca);
+                else if (w == 'B' || w == 'b') determinant(B, rb, cb);
+                else cout << "Invalid matrix\n";
+                break;
+            case 0: break;
+            default: cout << "Invalid choice\n";
+        }
+        if (ch != 0)
+        {
+            cout << "\nPress any key to continue...";
+            getch();
+        }
+    } while (ch != 0);
+}
