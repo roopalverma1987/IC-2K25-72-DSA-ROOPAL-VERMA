@@ -1,0 +1,38 @@
+#include<iostream.h>
+#include<conio.h>
+
+void main()
+{
+    int a[10][10], sp[50][3];
+    int r, c, i, j, k = 1;
+    clrscr();
+
+    cout << "Enter number of rows and columns: ";
+    cin >> r >> c;
+
+    cout << "Enter matrix elements:\n";
+    for (i = 0; i < r; i++)
+        for (j = 0; j < c; j++)
+            cin >> a[i][j];
+
+    for (i = 0; i < r; i++)
+        for (j = 0; j < c; j++)
+            if (a[i][j] != 0)
+            {
+                sp[k][0] = i;
+                sp[k][1] = j;
+                sp[k][2] = a[i][j];
+                k++;
+            }
+
+    sp[0][0] = r;
+    sp[0][1] = c;
+    sp[0][2] = k - 1;
+
+    cout << "\nSparse Matrix (Triplet Form):\n";
+    cout << "Row\tCol\tValue\n";
+    for (i = 0; i < k; i++)
+        cout << sp[i][0] << "\t" << sp[i][1] << "\t" << sp[i][2] << endl;
+
+    getch();
+}
