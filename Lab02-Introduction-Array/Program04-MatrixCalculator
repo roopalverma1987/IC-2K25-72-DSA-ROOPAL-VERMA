@@ -1,38 +1,189 @@
-#include<iostream.h>
-#include<conio.h>
-
-void main()
+#include <iostream>
+using namespace std;
+ 
+#define MAX 10
+ 
+void readMatrix(int m[MAX][MAX], int r, int c, const char *name)
 {
-    int a[10][10], sp[50][3];
-    int r, c, i, j, k = 1;
-    clrscr();
-
-    cout << "Enter number of rows and columns: ";
+    cout << "Enter elements of matrix " << name << " (" << r << "x" << c << "):\n";
+    for (int i = 0; i < r; i++)
+        for (int j = 0; j < c; j++)
+            cin >> m[i][j];
+}
+ 
+void printMatrix(int m[MAX][MAX], int r, int c)
+{
+    for (int i = 0; i < r; i++)
+    {
+        for (int j = 0; j < c; j++)
+            cout << m[i][j] << "\t";
+        cout << endl;
+    }
+}
+ 
+void addSub(int sign)
+{
+    int a[MAX][MAX], b[MAX][MAX], res[MAX][MAX];
+    int r, c;
+    cout << "Enter rows and columns: ";
     cin >> r >> c;
-
-    cout << "Enter matrix elements:\n";
-    for (i = 0; i < r; i++)
-        for (j = 0; j < c; j++)
-            cin >> a[i][j];
-
-    for (i = 0; i < r; i++)
-        for (j = 0; j < c; j++)
-            if (a[i][j] != 0)
+    if (r < 1 || c < 1 || r > MAX || c > MAX)
+    {
+        cout << "Invalid size (1 to " << MAX << ")\n";
+        return;
+    }
+    readMatrix(a, r, c, "A");
+    readMatrix(b, r, c, "B");
+ 
+    for (int i = 0; i < r; i++)
+        for (int j = 0; j < c; j++)
+            res[i][j] = a[i][j] + sign * b[i][j];
+ 
+    cout << "\nResult:\n";
+    printMatrix(res, r, c);
+}
+ 
+void multiply()
+{
+    int a[MAX][MAX], b[MAX][MAX], res[MAX][MAX];
+    int r1, c1, r2, c2;
+    cout << "Enter rows and columns of A: ";
+    cin >> r1 >> c1;
+    cout << "Enter rows and columns of B: ";
+    cin >> r2 >> c2;
+ 
+    if (c1 != r2)
+    {
+        cout << "Multiplication not possible (columns of A must equal rows of B)\n";
+        return;
+    }
+    if (r1 < 1 || c1 < 1 || c2 < 1 || r1 > MAX || c1 > MAX || c2 > MAX)
+    {
+        cout << "Invalid size (1 to " << MAX << ")\n";
+        return;
+    }
+    readMatrix(a, r1, c1, "A");
+    readMatrix(b, r2, c2, "B");
+ 
+    for (int i = 0; i < r1; i++)
+        for (int j = 0; j < c2; j++)
+        {
+            res[i][j] = 0;
+            for (int k = 0; k < c1; k++)
+                res[i][j] += a[i][k] * b[k][j];
+        }
+ 
+    cout << "\nResult (A x B):\n";
+    printMatrix(res, r1, c2);
+}
+ 
+void transpose()
+{
+    int a[MAX][MAX], res[MAX][MAX];
+    int r, c;
+    cout << "Enter rows and columns: ";
+    cin >> r >> c;
+    if (r < 1 || c < 1 || r > MAX || c > MAX)
+    {
+        cout << "Invalid size (1 to " << MAX << ")\n";
+        return;
+    }
+    readMatrix(a, r, c, "A");
+ 
+    for (int i = 0; i < r; i++)
+        for (int j = 0; j < c; j++)
+            res[j][i] = a[i][j];
+ 
+    cout << "\nTranspose:\n";
+    printMatrix(res, c, r);
+}
+ 
+int determinant(int m[MAX][MAX], int n)
+{
+    if (n == 1)
+        return m[0][0];
+    if (n == 2)
+        return m[0][0] * m[1][1] - m[0][1] * m[1][0];
+ 
+    int det = 0;
+    int sub[MAX][MAX];
+    for (int col = 0; col < n; col++)
+    {
+        // build the minor by removing row 0 and column 'col'
+        for (int i = 1; i < n; i++)
+        {
+            int cc = 0;
+            for (int j = 0; j < n; j++)
             {
-                sp[k][0] = i;
-                sp[k][1] = j;
-                sp[k][2] = a[i][j];
-                k++;
+                if (j == col)
+                    continue;
+                sub[i - 1][cc++] = m[i][j];
             }
-
-    sp[0][0] = r;
-    sp[0][1] = c;
-    sp[0][2] = k - 1;
-
-    cout << "\nSparse Matrix (Triplet Form):\n";
-    cout << "Row\tCol\tValue\n";
-    for (i = 0; i < k; i++)
-        cout << sp[i][0] << "\t" << sp[i][1] << "\t" << sp[i][2] << endl;
-
-    getch();
+        }
+        int sign = (col % 2 == 0) ? 1 : -1;
+        det += sign * m[0][col] * determinant(sub, n - 1);
+    }
+    return det;
+}
+ 
+void findDeterminant()
+{
+    int a[MAX][MAX];
+    int n;
+    cout << "Enter order of square matrix: ";
+    cin >> n;
+    if (n < 1 || n > MAX)
+    {
+        cout << "Invalid size (1 to " << MAX << ")\n";
+        return;
+    }
+    readMatrix(a, n, n, "A");
+    cout << "\nDeterminant = " << determinant(a, n) << endl;
+}
+ 
+int main()
+{
+    int choice;
+    char c;
+ 
+    do
+    {
+        cout << "\n===== MATRIX CALCULATOR =====\n";
+        cout << "1. Addition\n";
+        cout << "2. Subtraction\n";
+        cout << "3. Multiplication\n";
+        cout << "4. Transpose\n";
+        cout << "5. Determinant\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+ 
+        switch (choice)
+        {
+        case 1:
+            addSub(1);
+            break;
+        case 2:
+            addSub(-1);
+            break;
+        case 3:
+            multiply();
+            break;
+        case 4:
+            transpose();
+            break;
+        case 5:
+            findDeterminant();
+            break;
+        case 6:
+            return 0;
+        default:
+            cout << "Invalid choice\n";
+        }
+ 
+        cout << "\nDo you want to continue? (y/n): ";
+        cin >> c;
+    } while (c == 'y' || c == 'Y');
+ 
+    return 0;
 }
