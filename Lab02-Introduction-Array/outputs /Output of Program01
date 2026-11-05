@@ -1,0 +1,13 @@
+Enter 5 elements:
+10
+20
+30
+40
+50
+
+Array elements are:
+a[0] = 10
+a[1] = 20
+a[2] = 30
+a[3] = 40
+a[4] = 50
