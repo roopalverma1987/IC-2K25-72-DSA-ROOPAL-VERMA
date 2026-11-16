@@ -7,7 +7,7 @@ class queue
 {
     private:
     int front, rear, x;
-    int a[max];  // Missing array declaration
+    int a[max];  
 
     public:
     void insert();
