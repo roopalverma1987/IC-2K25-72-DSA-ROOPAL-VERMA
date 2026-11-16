@@ -1,87 +1,126 @@
+
 #include<iostream>
 #define max 5
+using namespace std;
+
 class queue
 {
     private:
-    int front,rear,x;
+    int front, rear, x;
+    int a[max];  // Missing array declaration
+
     public:
     void insert();
     void delete_e();
     void display();
+
     queue()
     {
-        front=-1;
-        rear=-1;
+        front = -1;
+        rear = -1;
     }
 };
+
 void queue::insert()
 {
-if(rear==max-1)
-{
-    cout<<"queue overflow\n";
-}else{
-    cout<<"enter element to add to queue\n";
-    cin>>x;
-    if(front==-1)
+    if(rear == max-1)
     {
-        rear= 0;
-        front= 0;
-    }else{
-        rear++;
+        cout << "Queue Overflow\n";
     }
-    a[rear]=x;
+    else
+    {
+        cout << "Enter element to add: ";
+        cin >> x;
+
+        if(front == -1)
+        {
+            front = 0;
+            rear = 0;
+        }
+        else
+        {
+            rear++;
+        }
+
+        a[rear] = x;
+    }
 }
-}
+
 void queue::delete_e()
 {
-    if(front==-1)
+    if(front == -1)
     {
-        cout<<"queue underflow\n";
-    }else{
-        x=a[front];
-        if(front==0)
+        cout << "Queue Underflow\n";
+    }
+    else
+    {
+        x = a[front];
+        cout << x << " deleted\n";
+
+        if(front == rear)
         {
-            front=-1;
-            rear=-1;
-        }else{
+            front = -1;
+            rear = -1;
+        }
+        else
+        {
             front++;
         }
-        }
-    } 
+    }
+}
 
-    void queue::display()
+void queue::display()
+{
+    if(front == -1)
     {
-        if(front==-1)
+        cout << "Queue is empty\n";
+    }
+    else
+    {
+        for(int i = front; i <= rear; i++)
         {
-            cout<<"queue underflow\n";
-        }else{
-            for(int i=front; i<=rear; i++)
-            {
-                cout<<a[i]"\n";
-            }
+            cout << a[i] << "\n";
         }
     }
-    int main()
+}
+
+int main()
+{
+    queue q1;
+    int choice;
+    char c;
+
+    do
     {
-        queue q1;
-        int choice;
-        char c;
-        do{
-            cout<<"\n 1.insert 2.delete_e 3.display";
-            cin>>choice;
-            switch(choice)
-            {
-                case 1:
+        cout << "\n1. Insert\n2. Delete\n3. Display\n4. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch(choice)
+        {
+            case 1:
                 q1.insert();
                 break;
-                case 2:
-                q2.delete_e();
+
+            case 2:
+                q1.delete_e();
                 break;
-                case 3:
-                q3.display();
+
+            case 3:
+                q1.display();
                 break;
-            }
-            }
-            cout<<"while(c=='y'|| c=='Y');
-            cin>>c;
+
+            case 4:
+                return 0;
+
+            default:
+                cout << "Invalid choice\n";
         }
+
+        cout << "Do you want to continue? (y/n): ";
+        cin >> c;
+
+    } while(c == 'y' || c == 'Y');
+
+    return 0;
+}
